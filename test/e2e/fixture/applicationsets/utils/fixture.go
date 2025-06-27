@@ -24,7 +24,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/argoproj/argo-cd/v3/common"
+	//"github.com/argoproj/argo-cd/v3/common"
 	"github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1"
 	appclientset "github.com/argoproj/argo-cd/v3/pkg/client/clientset/versioned"
 	"github.com/argoproj/argo-cd/v3/test/e2e/fixture"
@@ -118,7 +118,7 @@ func EnsureCleanState(t *testing.T) {
 	policy := metav1.DeletePropagationForeground
 
 	fixture.RunFunctionsInParallelAndCheckErrors(t, []func() error{
-		func() error {
+		/*func() error {
 			// kubectl delete secrets -l argocd.argoproj.io/secret-type=repository
 			return fixtureClient.KubeClientset.CoreV1().Secrets(TestNamespace()).DeleteCollection(
 				t.Context(),
@@ -131,16 +131,16 @@ func EnsureCleanState(t *testing.T) {
 				t.Context(),
 				metav1.DeleteOptions{PropagationPolicy: &policy},
 				metav1.ListOptions{LabelSelector: common.LabelKeySecretType + "=" + common.LabelValueSecretTypeRepoCreds})
-		},
-		func() error {
+		},*/
+		/*func() error {
 			// Delete the applicationset-e2e namespace, if it exists
 			err := fixtureClient.KubeClientset.CoreV1().Namespaces().Delete(t.Context(), ApplicationsResourcesNamespace, metav1.DeleteOptions{PropagationPolicy: &policy})
 			if err != nil && !apierrors.IsNotFound(err) { // 'not found' error is expected
 				return err
 			}
 			return nil
-		},
-		func() error {
+		},*/
+		/*func() error {
 			// Delete the argocd-e2e-external namespace, if it exists
 			err := fixtureClient.KubeClientset.CoreV1().Namespaces().Delete(t.Context(), string(ArgoCDExternalNamespace), metav1.DeleteOptions{PropagationPolicy: &policy})
 			if err != nil && !apierrors.IsNotFound(err) { // 'not found' error is expected
@@ -155,7 +155,7 @@ func EnsureCleanState(t *testing.T) {
 				return err
 			}
 			return nil
-		},
+		},*/
 		// delete resources
 		func() error {
 			// kubectl delete applicationsets --all
@@ -265,14 +265,14 @@ func waitForExpectedClusterState(t *testing.T) error {
 	}
 
 	// Wait up to 120 seconds for namespace to not exist
-	for _, namespace := range []string{string(ApplicationsResourcesNamespace), string(ArgoCDExternalNamespace), string(ArgoCDExternalNamespace2)} {
+	/*for _, namespace := range []string{string(ApplicationsResourcesNamespace), string(ArgoCDExternalNamespace), string(ArgoCDExternalNamespace2)} {
 		// Wait up to 120 seconds for namespace to not exist
 		if err := waitForSuccess(func() error {
 			return cleanUpNamespace(fixtureClient, namespace)
 		}, time.Now().Add(120*time.Second)); err != nil {
 			return err
 		}
-	}
+	}*/
 
 	return nil
 }

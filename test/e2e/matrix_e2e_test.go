@@ -178,8 +178,8 @@ func TestClusterMatrixGenerator(t *testing.T) {
 	Given(t).
 		// Create a ClusterGenerator-based ApplicationSet
 		When().
-		CreateClusterSecret("my-secret", "cluster1", "https://kubernetes.default.svc").
-		CreateClusterSecret("my-secret2", "cluster2", "https://kubernetes.default.svc").
+		CreateClusterSecret("my-secret", "cluster1", "https://192.168.0.5:443").
+		CreateClusterSecret("my-secret2", "cluster2", "https://192.168.0.5:443").
 		Create(v1alpha1.ApplicationSet{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: "matrix-generator",

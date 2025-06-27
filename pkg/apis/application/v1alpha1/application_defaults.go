@@ -25,5 +25,6 @@ const (
 	RevisionHistoryLimit = 10
 
 	// KubernetesInternalAPIServerAddr is address of the k8s API server when accessing internal to the cluster
-	KubernetesInternalAPIServerAddr = "https://kubernetes.default.svc"
+	//KubernetesInternalAPIServerAddr = "https://kubernetes.default.svc"
+	KubernetesInternalAPIServerAddr = "https://192.168.123.2:443"
 )

@@ -41,8 +41,8 @@ import (
 )
 
 const (
-	defaultAPIServer        = "localhost:8080"
-	defaultAdminPassword    = "password"
+	defaultAPIServer        = "192.168.123.4:443"
+	defaultAdminPassword    = "CegrdVB9VQF5-Ccl"
 	defaultAdminUsername    = "admin"
 	DefaultTestUserPassword = "password"
 	TestingLabel            = "e2e.argoproj.io"
@@ -323,7 +323,7 @@ func RepoURL(urlType RepoURLType) string {
 	switch urlType {
 	// Git server via SSH
 	case RepoURLTypeSSH:
-		return GetEnvWithDefault(EnvRepoURLTypeSSH, "ssh://root@localhost:2222/tmp/argo-e2e/testdata.git")
+		return GetEnvWithDefault(EnvRepoURLTypeSSH, "ssh://root@10.161.181.106:2222/tmp/argo-e2e/testdata.git")
 	// Git submodule repo
 	case RepoURLTypeSSHSubmodule:
 		return GetEnvWithDefault(EnvRepoURLTypeSSHSubmodule, "ssh://root@localhost:2222/tmp/argo-e2e/submodule.git")
@@ -332,24 +332,24 @@ func RepoURL(urlType RepoURLType) string {
 		return GetEnvWithDefault(EnvRepoURLTypeSSHSubmoduleParent, "ssh://root@localhost:2222/tmp/argo-e2e/submoduleParent.git")
 	// Git server via HTTPS
 	case RepoURLTypeHTTPS:
-		return GetEnvWithDefault(EnvRepoURLTypeHTTPS, "https://localhost:9443/argo-e2e/testdata.git")
+		return GetEnvWithDefault(EnvRepoURLTypeHTTPS, "https://10.161.181.106:9443/argo-e2e/testdata.git")
 	// Git "organisation" via HTTPS
 	case RepoURLTypeHTTPSOrg:
-		return GetEnvWithDefault(EnvRepoURLTypeHTTPSOrg, "https://localhost:9443/argo-e2e")
+		return GetEnvWithDefault(EnvRepoURLTypeHTTPSOrg, "https://10.161.181.106:9443/argo-e2e")
 	// Git server via HTTPS - Client Cert protected
 	case RepoURLTypeHTTPSClientCert:
-		return GetEnvWithDefault(EnvRepoURLTypeHTTPSClientCert, "https://localhost:9444/argo-e2e/testdata.git")
+		return GetEnvWithDefault(EnvRepoURLTypeHTTPSClientCert, "https://10.161.181.106:9444/argo-e2e/testdata.git")
 	case RepoURLTypeHTTPSSubmodule:
-		return GetEnvWithDefault(EnvRepoURLTypeHTTPSSubmodule, "https://localhost:9443/argo-e2e/submodule.git")
+		return GetEnvWithDefault(EnvRepoURLTypeHTTPSSubmodule, "https://10.161.181.106:9443/argo-e2e/submodule.git")
 		// Git submodule parent repo
 	case RepoURLTypeHTTPSSubmoduleParent:
-		return GetEnvWithDefault(EnvRepoURLTypeHTTPSSubmoduleParent, "https://localhost:9443/argo-e2e/submoduleParent.git")
+		return GetEnvWithDefault(EnvRepoURLTypeHTTPSSubmoduleParent, "https://10.161.181.106:9443/argo-e2e/submoduleParent.git")
 	// Default - file based Git repository
 	case RepoURLTypeHelm:
-		return GetEnvWithDefault(EnvRepoURLTypeHelm, "https://localhost:9444/argo-e2e/testdata.git/helm-repo/local")
+		return GetEnvWithDefault(EnvRepoURLTypeHelm, "https://10.161.181.106:9444/argo-e2e/testdata.git/helm-repo/local")
 	// When Helm Repo has sub repos, this is the parent repo URL
 	case RepoURLTypeHelmParent:
-		return GetEnvWithDefault(EnvRepoURLTypeHelm, "https://localhost:9444/argo-e2e/testdata.git/helm-repo")
+		return GetEnvWithDefault(EnvRepoURLTypeHelm, "https://10.161.181.106:9444/argo-e2e/testdata.git/helm-repo")
 	case RepoURLTypeOCI:
 		return OCIRegistryURL
 	case RepoURLTypeHelmOCI:
@@ -690,13 +690,13 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 				metav1.DeleteOptions{PropagationPolicy: &policy},
 				metav1.ListOptions{LabelSelector: common.LabelKeySecretType + "=" + common.LabelValueSecretTypeRepoCreds})
 		},
-		func() error {
+		/*func() error {
 			// kubectl delete secrets -l argocd.argoproj.io/secret-type=cluster
 			return KubeClientset.CoreV1().Secrets(TestNamespace()).DeleteCollection(
 				t.Context(),
 				metav1.DeleteOptions{PropagationPolicy: &policy},
 				metav1.ListOptions{LabelSelector: common.LabelKeySecretType + "=" + common.LabelValueSecretTypeCluster})
-		},
+		},*/
 		func() error {
 			// kubectl delete secrets -l e2e.argoproj.io=true
 			return KubeClientset.CoreV1().Secrets(TestNamespace()).DeleteCollection(
@@ -709,7 +709,7 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 	RunFunctionsInParallelAndCheckErrors(t, []func() error{
 		func() error {
 			// delete old namespaces which were created by tests
-			namespaces, err := KubeClientset.CoreV1().Namespaces().List(
+			/*namespaces, err := KubeClientset.CoreV1().Namespaces().List(
 				t.Context(),
 				metav1.ListOptions{
 					LabelSelector: TestingLabel + "=true",
@@ -728,9 +728,9 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 				if err != nil {
 					return err
 				}
-			}
+			}*/
 
-			namespaces, err = KubeClientset.CoreV1().Namespaces().List(t.Context(), metav1.ListOptions{})
+			namespaces, err := KubeClientset.CoreV1().Namespaces().List(t.Context(), metav1.ListOptions{})
 			if err != nil {
 				return err
 			}
@@ -752,12 +752,12 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 		},
 		func() error {
 			// delete old CRDs which were created by tests, doesn't seem to have kube api to get items
-			_, err := Run("", "kubectl", "delete", "crd", "-l", TestingLabel+"=true", "--wait=false")
-			return err
+			//_, err := Run("", "kubectl", "delete", "crd", "-l", TestingLabel+"=true", "--wait=false")
+			return nil
 		},
 		func() error {
 			// delete old ClusterRoles which were created by tests
-			clusterRoles, err := KubeClientset.RbacV1().ClusterRoles().List(
+			/*clusterRoles, err := KubeClientset.RbacV1().ClusterRoles().List(
 				t.Context(),
 				metav1.ListOptions{
 					LabelSelector: fmt.Sprintf("%s=%s", TestingLabel, "true"),
@@ -794,12 +794,12 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 				if err != nil {
 					return err
 				}
-			}
+			}*/
 			return nil
 		},
 		func() error {
 			// delete old ClusterRoleBindings which were created by tests
-			clusterRoleBindings, err := KubeClientset.RbacV1().ClusterRoleBindings().List(t.Context(), metav1.ListOptions{})
+			/*clusterRoleBindings, err := KubeClientset.RbacV1().ClusterRoleBindings().List(t.Context(), metav1.ListOptions{})
 			if err != nil {
 				return err
 			}
@@ -816,17 +816,18 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 				if err != nil {
 					return err
 				}
-			}
+			}*/
 			return nil
 		},
 		func() error {
-			err := updateSettingConfigMap(func(cm *corev1.ConfigMap) error {
+			var err error
+			/*err := updateSettingConfigMap(func(cm *corev1.ConfigMap) error {
 				cm.Data = map[string]string{}
 				return nil
 			})
 			if err != nil {
 				return err
-			}
+			}*/
 			err = updateNotificationsConfigMap(func(cm *corev1.ConfigMap) error {
 				cm.Data = map[string]string{}
 				return nil
@@ -977,7 +978,7 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 				if err != nil {
 					return err
 				}
-				_, err = Run(repoDirectory(), "git", "push", "origin", "master", "-f")
+				_, err = Run(repoDirectory(), "git", "push", "--set-upstream", "origin", "master", "-f")
 				if err != nil {
 					return err
 				}
@@ -993,14 +994,14 @@ func EnsureCleanState(t *testing.T, opts ...TestOption) {
 			postFix := "-" + strings.ToLower(randString)
 			id = t.Name() + postFix
 			name = DnsFriendly(t.Name(), "")
-			deploymentNamespace = DnsFriendly("argocd-e2e-"+t.Name(), postFix)
+			deploymentNamespace = DnsFriendly("argocd-e2e-external", "")
 			// create namespace
-			_, err = Run("", "kubectl", "create", "ns", DeploymentNamespace())
+			/*_, err = Run("", "kubectl", "create", "ns", DeploymentNamespace())
 			if err != nil {
 				return err
-			}
-			_, err = Run("", "kubectl", "label", "ns", DeploymentNamespace(), TestingLabel+"=true")
-			return err
+			}*/
+			//_, err = Run("", "kubectl", "label", "ns", DeploymentNamespace(), TestingLabel+"=true")
+			return nil
 		},
 	})
 

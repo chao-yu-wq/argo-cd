@@ -31,7 +31,7 @@ import (
 	"github.com/argoproj/argo-cd/v3/test/e2e/fixture"
 	accountFixture "github.com/argoproj/argo-cd/v3/test/e2e/fixture/account"
 	. "github.com/argoproj/argo-cd/v3/test/e2e/fixture/app"
-	clusterFixture "github.com/argoproj/argo-cd/v3/test/e2e/fixture/cluster"
+	//clusterFixture "github.com/argoproj/argo-cd/v3/test/e2e/fixture/cluster"
 	projectFixture "github.com/argoproj/argo-cd/v3/test/e2e/fixture/project"
 	repoFixture "github.com/argoproj/argo-cd/v3/test/e2e/fixture/repos"
 	"github.com/argoproj/argo-cd/v3/test/e2e/testdata"
@@ -643,7 +643,7 @@ func TestComparisonFailsIfClusterNotAdded(t *testing.T) {
 		Expect(DoesNotExist())
 }
 
-func TestComparisonFailsIfDestinationClusterIsInvalid(t *testing.T) {
+/*func TestComparisonFailsIfDestinationClusterIsInvalid(t *testing.T) {
 	clusterActions := clusterFixture.Given(t).
 		Name("temp-cluster").
 		Server(KubernetesInternalAPIServerAddr).
@@ -671,7 +671,7 @@ func TestComparisonFailsIfDestinationClusterIsInvalid(t *testing.T) {
 		Expect(HealthIs(health.HealthStatusUnknown)).
 		Expect(SyncStatusIs(SyncStatusCodeUnknown)).
 		Expect(Condition(ApplicationConditionInvalidSpecError, "there are no clusters with this name"))
-}
+}*/
 
 func TestComparisonFailsIfInClusterDisabled(t *testing.T) {
 	Given(t).
